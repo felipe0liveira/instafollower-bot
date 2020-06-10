@@ -4,13 +4,13 @@ const dotenv = require(`dotenv`);
 const config = require(`./config.json`);
 
 (async () => {
-    try {
-        console.clear();
-        dotenv.config();
-        console.log(`\n # Initializing ${chalk.blueBright(`Puppeteer`)}\n`);
-        const browser = await puppeteer.launch({ headless: config.bot.headless });
-        const page = await browser.newPage();
+    console.clear();
+    dotenv.config();
+    console.log(`\n # Initializing ${chalk.blueBright(`Puppeteer`)}\n`);
+    const browser = await puppeteer.launch({ headless: config.bot.headless });
+    const page = await browser.newPage();
 
+    try {
         // Go to Instagram
         console.log(` - Going to ${chalk.redBright(`instagram`)}`);
         await page.goto(config.instagram.defaultURL);
@@ -39,30 +39,36 @@ const config = require(`./config.json`);
             await page.click('body section main div > ul li:nth-child(2) a');
             await page.waitFor(5000);
 
-            const buttons = await page.$$('button');
-            let followingCount = 0;
-            let button = {};
+            try {
+                const buttons = await page.$$('button');
+                let followingCount = 0;
+                let button = {};
 
-            for (let index = 0; index < config.instagram.followsPerUser; index++) {
-                button = buttons[index];
-                let textContent = await button.evaluate(e => e.textContent);
-                textContent = textContent.trim().toLowerCase();
+                for (let index = 0; index < config.instagram.followsPerUser; index++) {
+                    button = buttons[index];
+                    let textContent = await button.evaluate(e => e.textContent);
+                    textContent = textContent.trim().toLowerCase();
 
-                if (textContent === `follow` || textContent === `seguir`) {
-                    await page.evaluate(() => window.scroll(0, window.innerHeight));
-                    await page.waitFor(500);
-                    await button.evaluate(e => e.click());
-                    await page.waitFor(1500);
-                    console.clear();
-                    followingCount++;
-                    console.log(` # Following [${chalk.blueBright(followingCount)}] from '${chalk.redBright(target)}'`);
+                    if (textContent === `follow` || textContent === `seguir`) {
+                        await page.evaluate(() => window.scroll(0, window.innerHeight));
+                        await page.waitFor(500);
+                        await button.evaluate(e => e.click());
+                        await page.waitFor(1500);
+                        console.clear();
+                        followingCount++;
+                        console.log(` # Following [${chalk.blueBright(followingCount)}] from '${chalk.redBright(target)}'`);
+                    }
                 }
+            }
+            catch (error) {
+                console.log(` ${chalk.redBright(`@ Error: Followers page didn't open, going to the next target!`)}`);
+                await page.waitFor(3000);
             }
         }
 
     } catch (error) {
         console.clear();
-        console.log(` ${chalk.blueBright('@ Error during the process')}\n`);
+        console.log(` ${chalk.redBright('@ Error during the process')}\n`);
 
         console.error(error);
     } finally {
