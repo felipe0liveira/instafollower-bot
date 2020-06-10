@@ -9,6 +9,7 @@ const config = require(`./config.json`);
     console.log(`\n # Initializing ${chalk.blueBright(`Puppeteer`)}\n`);
     const browser = await puppeteer.launch({ headless: config.bot.headless });
     const page = await browser.newPage();
+    let totalFollowing = 0;
 
     try {
         // Go to Instagram
@@ -56,6 +57,7 @@ const config = require(`./config.json`);
                         await page.waitFor(1500);
                         console.clear();
                         followingCount++;
+                        totalFollowing++;
                         console.log(` # Following [${chalk.blueBright(followingCount)}] from '${chalk.redBright(target)}'`);
                     }
                 }
@@ -72,8 +74,14 @@ const config = require(`./config.json`);
 
         console.error(error);
     } finally {
+        await page.waitFor(1000);
+        console.clear();
         console.log('\n - Closing the Browser');
+        await page.waitFor(1000);
         await browser.close();
+        console.clear();
+        console.log(`   ${chalk.greenBright('FINISHED!')}`);
+        console.log(`   FOLLOWING: ${chalk.blueBright(totalFollowing)}\n`);
     }
 
 })();
