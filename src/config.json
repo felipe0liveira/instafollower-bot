@@ -1,0 +1,14 @@
+{
+    "instagram": {
+        "defaultURL": "https://www.instagram.com",
+        "targets": [
+            "insta_username1",
+            "insta_username2",
+            "insta_username3"
+        ],
+        "followsPerUser": 15
+    },
+    "bot": {
+        "headless": false
+    }
+}
