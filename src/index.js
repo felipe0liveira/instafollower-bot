@@ -18,7 +18,7 @@ const config = require(`./config.json`);
     // Sign In
     console.log(` - Signing In`);
     await page.type(`input[name="username"]`, process.env.INSTAGRAM_USERNAME);
-    await page.type(`input[name="password"]`, process.env.INSTAGRAM_USERNAME);
+    await page.type(`input[name="password"]`, process.env.INSTAGRAM_PASSWORD);
 
     await page.click('button[type=submit]');
     await page.waitFor(3000);
